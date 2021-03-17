@@ -1,0 +1,17 @@
+repositories:
+  asv_helm:
+    type: git
+    url: git@github.com:rolker/asv_helm.git
+    version: noetic
+  asv_sim:
+    type: git
+    url: git@github.com:rolker/asv_sim.git
+    version: noetic
+  mbes_sim:
+    type: git
+    url: git@github.com:rolker/mbes_sim.git
+    version: noetic
+  traffic_sim:
+    type: git
+    url: git@github.com:rolker/traffic_sim.git
+    version: noetic

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>project11_simulation</name>
+  <version>0.0.0</version>
+  <description>
+    Project11 packages related robot simulation
+  </description>
+
+  <author email="roland@ccom.unh.edu">Roland Arsenault</author>
+  <maintainer email="roland@ccom.unh.edu">Roland Arsenault</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>project11</exec_depend>
+  <exec_depend>asv_helm</exec_depend>
+  <exec_depend>asv_sim</exec_depend>
+  <exec_depend>mbes_sim</exec_depend>
+  <exec_depend>traffic_sim</exec_depend>
+  
+</package>
