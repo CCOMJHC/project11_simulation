@@ -1,0 +1,21 @@
+<launch>
+  <arg name="namespace" default="ben"/>
+  <arg name="operator_namespace" default="operator"/>
+  <arg name="enableBridge" default="true"/>
+
+  <param name="/use_sim_time" type="bool" value="true"/>
+  
+  <include file="$(find project11)/launch/operator_core.launch">
+    <arg name="operatorJoystick" value="true"/>
+    <arg name="namespace" default="$(arg operator_namespace)"/>
+    <arg name="robotNamespace" default="$(arg namespace)"/>
+    <arg name="enableBridge" value="$(arg enableBridge)"/>
+  </include>
+    
+  <include file="$(find project11)/launch/operator_ui.launch">
+    <arg name="namespace" default="$(arg operator_namespace)"/>
+  </include>
+
+  <rosparam command="load" file="$(find ben_project11)/config/ben_operator.yaml" ns="$(arg operator_namespace)"/>
+    
+</launch>
