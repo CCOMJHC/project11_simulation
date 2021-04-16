@@ -9,7 +9,6 @@
 
   <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
 
-  <node if="$(arg override_mpc)" pkg="path_follower" type="mpc_adapter_node" name="mpc_adapter" ns="$(arg namespace)"/>
     
   <include file="$(find project11)/launch/robot_core.launch">
     <arg name="override_mpc" value="$(arg override_mpc)"/>
