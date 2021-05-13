@@ -3,6 +3,7 @@
   <arg name="operator_namespace" default="operator"/>
   <arg name="enableBridge" default="true"/>
   <arg name="override_mpc" default="false"/>
+  <arg name="sim_traffic" default="false"/>
 
   <param name="/use_sim_time" type="bool" value="true"/>
   <rosparam command="load" file="$(find ben_project11)/config/ben.yaml" ns="$(arg namespace)"/>
@@ -35,4 +36,7 @@
   <node pkg="mbes_sim" type="mbes_sim_node.py" name="mbes_sim" args="$(arg bathy_grid_path)" ns="$(arg namespace)"/>
     
   <node pkg="manda_coverage" type="manda_coverage_node" name="manda_coverage" ns="$(arg namespace)"/>
+
+  <node if="$(arg sim_traffic)" pkg="traffic_sim" type="traffic_sim_node.py" name="traffic_sim" ns="$(arg namespace)"/>
+
 </launch>
