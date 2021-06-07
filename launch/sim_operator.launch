@@ -2,7 +2,7 @@
   <arg name="namespace" default="ben"/>
   <arg name="operator_namespace" default="operator"/>
   <arg name="enableBridge" default="true"/>
-
+  <arg name="backgroundChart" default="$(find camp)/workspace/13283/13283_2.KAP"/>
   <param name="/use_sim_time" type="bool" value="true"/>
   
   <include file="$(find project11)/launch/operator_core.launch">
@@ -13,7 +13,8 @@
   </include>
     
   <include file="$(find project11)/launch/operator_ui.launch">
-    <arg name="namespace" default="$(arg operator_namespace)"/>
+    <arg name="namespace" value="$(arg operator_namespace)"/>
+    <arg name="backgroundChart" value="$(arg backgroundChart)"/>
   </include>
 
   <rosparam command="load" file="$(find ben_project11)/config/ben_operator.yaml" ns="$(arg operator_namespace)"/>
