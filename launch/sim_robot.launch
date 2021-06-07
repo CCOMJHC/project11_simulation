@@ -6,6 +6,15 @@
   <arg name="sim_traffic" default="false"/>
 
   <param name="/use_sim_time" type="bool" value="true"/>
+
+  <include file="$(find ben_description)/launch/load.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+  <include file="$(find ben_description)/launch/publish_state.launch">
+      <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
   <rosparam command="load" file="$(find ben_project11)/config/ben.yaml" ns="$(arg namespace)"/>
 
   <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
