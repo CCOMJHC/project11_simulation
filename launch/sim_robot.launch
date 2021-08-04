@@ -27,7 +27,7 @@
   </include>
     
   <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="$(arg namespace)">
-    <remap from="helm" to="control/helm"/>
+    <remap from="helm" to="project11/control/helm"/>
     <remap from="throttle" to="control/throttle"/>
     <remap from="rudder" to="control/rudder"/>
   </node>
