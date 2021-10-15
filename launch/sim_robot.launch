@@ -22,7 +22,7 @@
     
   <include file="$(find project11)/launch/robot_core.launch">
     <arg name="override_mpc" value="$(arg override_mpc)"/>
-    <arg name="namespace" default="$(arg namespace)"/>
+    <arg name="namespace" value="$(arg namespace)"/>
     <arg name="enableBridge" value="$(arg enableBridge)"/>
   </include>
     

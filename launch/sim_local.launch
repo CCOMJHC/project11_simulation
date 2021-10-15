@@ -9,14 +9,14 @@
 
   <include file="$(find project11_simulation)/launch/sim_robot.launch">
     <arg name="override_mpc" value="$(arg override_mpc)"/>
-    <arg name="namespace" default="$(arg namespace)"/>
+    <arg name="namespace" value="$(arg namespace)"/>
     <arg name="enableBridge" value="false"/>
     <arg name="sim_traffic" value="$(arg sim_traffic)"/>
   </include>
 
   <include file="$(find project11_simulation)/launch/sim_operator.launch">
-    <arg name="namespace" default="$(arg namespace)"/>
-    <arg name="operator_namespace" default="$(arg operator_namespace)"/>
+    <arg name="namespace" value="$(arg namespace)"/>
+    <arg name="operator_namespace" value="$(arg operator_namespace)"/>
     <arg name="enableBridge" value="false"/>
     <arg name="backgroundChart" value="$(arg backgroundChart)"/>
   </include>
