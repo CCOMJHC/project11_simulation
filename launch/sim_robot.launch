@@ -4,6 +4,7 @@
   <arg name="enableBridge" default="true"/>
   <arg name="override_mpc" default="false"/>
   <arg name="sim_traffic" default="false"/>
+  <arg name="old_nav_stack" default="false"/>
 
   <param name="/use_sim_time" type="bool" value="true"/>
 
@@ -24,6 +25,7 @@
     <arg name="override_mpc" value="$(arg override_mpc)"/>
     <arg name="namespace" value="$(arg namespace)"/>
     <arg name="enableBridge" value="$(arg enableBridge)"/>
+    <arg name="old_nav_stack" value="$(arg old_nav_stack)"/>
   </include>
     
   <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="$(arg namespace)">
