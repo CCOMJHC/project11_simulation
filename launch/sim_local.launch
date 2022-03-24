@@ -1,19 +1,15 @@
 <launch>
   <arg name="namespace" default="ben"/>
   <arg name="operator_namespace" default="operator"/>
-  <arg name="override_mpc" default="false"/>
   <arg name="sim_traffic" default="false"/>
   <arg name="backgroundChart" default="$(find camp)/workspace/13283/13283_2.KAP"/>
-  <arg name="old_nav_stack" default="true"/>
 
   <param name="/use_sim_time" type="bool" value="true"/>
 
   <include file="$(find project11_simulation)/launch/sim_robot.launch">
-    <arg name="override_mpc" value="$(arg override_mpc)"/>
     <arg name="namespace" value="$(arg namespace)"/>
     <arg name="enableBridge" value="false"/>
     <arg name="sim_traffic" value="$(arg sim_traffic)"/>
-    <arg name="old_nav_stack" value="$(arg old_nav_stack)"/>
   </include>
 
   <include file="$(find project11_simulation)/launch/sim_operator.launch">

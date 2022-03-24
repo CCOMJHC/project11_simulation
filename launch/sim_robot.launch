@@ -2,31 +2,15 @@
   <arg name="namespace" default="ben"/>
   <arg name="operator_namespace" default="operator"/>
   <arg name="enableBridge" default="true"/>
-  <arg name="override_mpc" default="false"/>
   <arg name="sim_traffic" default="false"/>
-  <arg name="old_nav_stack" default="false"/>
 
   <param name="/use_sim_time" type="bool" value="true"/>
 
-  <include file="$(find ben_description)/launch/load.launch">
+  <include file="$(find ben_project11)/launch/ben_core.launch">
     <arg name="namespace" value="$(arg namespace)"/>
   </include>
-
-  <include file="$(find ben_description)/launch/publish_state.launch">
-      <arg name="namespace" value="$(arg namespace)"/>
-  </include>
-
-  <rosparam command="load" file="$(find ben_project11)/config/ben.yaml" ns="$(arg namespace)"/>
 
   <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
-
-    
-  <include file="$(find project11)/launch/robot_core.launch">
-    <arg name="override_mpc" value="$(arg override_mpc)"/>
-    <arg name="namespace" value="$(arg namespace)"/>
-    <arg name="enableBridge" value="$(arg enableBridge)"/>
-    <arg name="old_nav_stack" value="$(arg old_nav_stack)"/>
-  </include>
     
   <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="$(arg namespace)">
     <remap from="helm" to="project11/control/helm"/>
@@ -43,10 +27,10 @@
     <remap from="rudder" to="control/rudder"/>
   </node>
     
-  <arg name="bathy_grid_path" default="$(find mbes_sim)/data/US5NH02M.tiff"/>
+  <!-- <arg name="bathy_grid_path" default="$(find mbes_sim)/data/US5NH02M.tiff"/>
   <node pkg="mbes_sim" type="mbes_sim_node.py" name="mbes_sim" args="$(arg bathy_grid_path)" ns="$(arg namespace)"/>
     
-  <node pkg="manda_coverage" type="manda_coverage_node" name="manda_coverage" ns="$(arg namespace)"/>
+  <node pkg="manda_coverage" type="manda_coverage_node" name="manda_coverage" ns="$(arg namespace)"/> -->
 
   <node if="$(arg sim_traffic)" pkg="traffic_sim" type="traffic_sim_node.py" name="traffic_sim" ns="$(arg namespace)"/>
 
