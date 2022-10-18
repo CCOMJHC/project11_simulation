@@ -18,7 +18,4 @@
     <arg name="enableBridge" value="false"/>
     <arg name="backgroundChart" value="$(arg backgroundChart)"/>
   </include>
-
-  <!-- <rosparam file="$(find orbit)/config/orbit.yaml" command="load" ns="$(arg namespace)/navigator"/> -->
-    
 </launch>
