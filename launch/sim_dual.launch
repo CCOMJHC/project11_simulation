@@ -21,7 +21,7 @@
     <remap from="helm" to="project11/control/helm"/>
     <remap from="throttle" to="control/throttle"/>
     <remap from="rudder" to="control/rudder"/>
-    <remap from="have_commands" to="/asv_sim/ben/have_commands"/>
+    <remap from="have_commands" to="/asv_sim/bob/have_commands"/>
   </node>
 
   <node pkg="command_bridge" type="command_bridge_sender_node.py" name="command_bridge_sender" ns="bob"/>

@@ -15,6 +15,8 @@
     
   <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="$(arg namespace)">
     <remap from="helm" to="project11/control/helm"/>
+    <remap from="cmd_vel" to="project11/control/cmd_vel"/>
+    <remap from="odom" to="project11/odom"/>
     <remap from="throttle" to="control/throttle"/>
     <remap from="rudder" to="control/rudder"/>
     <remap from="have_commands" to="/asv_sim/ben/have_commands"/>
