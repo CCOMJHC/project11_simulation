@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find project11_simulation)/launch/sim_local.launch"/>
+  <param name="/asv_sim/current_speed" value="0.0"/>
+  <param name="/asv_sim/platforms/ben/start_heading" value="240.0"/>
+  <param name="/asv_sim/platforms/ben/start_lat" value="43.07204253"/>
+  <param name="/asv_sim/platforms/ben/start_lon" value="-70.71139254"/>
+</launch>
