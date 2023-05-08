@@ -16,6 +16,5 @@
   <exec_depend>asv_helm</exec_depend>
   <exec_depend>asv_sim</exec_depend>
   <exec_depend>mbes_sim</exec_depend>
-  <exec_depend>traffic_sim</exec_depend>
   
 </package>
