@@ -1,0 +1,3 @@
+# use separate port for udp bridge in sim assuming both robot and operator are on same machine
+
+udp_bridge/port: 4201

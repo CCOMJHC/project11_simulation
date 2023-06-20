@@ -18,5 +18,6 @@
   </include>
 
   <rosparam command="load" file="$(find ben_project11)/config/ben_operator.yaml" ns="$(arg operator_namespace)"/>
+  <rosparam command="load" file="$(find project11_simulation)/config/sim_operator.yaml" ns="$(arg operator_namespace)"/>
     
 </launch>
