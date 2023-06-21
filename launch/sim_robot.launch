@@ -11,7 +11,7 @@
     <arg name="enableBridge" value="$(arg enableBridge)"/>
   </include>
 
-  <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
+  <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/connections/default/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
     
   <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="$(arg namespace)">
     <remap from="helm" to="project11/control/helm"/>
