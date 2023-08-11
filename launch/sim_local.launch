@@ -3,13 +3,15 @@
   <arg name="operator_namespace" default="operator"/>
   <arg name="sim_traffic" default="false"/>
   <arg name="backgroundChart" default="$(find camp)/workspace/13283/13283_2.KAP"/>
+  <arg name="use_sim_time" default="true"/>
 
-  <param name="/use_sim_time" type="bool" value="true"/>
+  <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
 
   <include file="$(find project11_simulation)/launch/sim_robot.launch">
     <arg name="namespace" value="$(arg namespace)"/>
     <arg name="enableBridge" value="false"/>
     <arg name="sim_traffic" value="$(arg sim_traffic)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
   </include>
 
   <include file="$(find project11_simulation)/launch/sim_operator.launch">
@@ -17,5 +19,6 @@
     <arg name="operator_namespace" value="$(arg operator_namespace)"/>
     <arg name="enableBridge" value="false"/>
     <arg name="backgroundChart" value="$(arg backgroundChart)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
   </include>
 </launch>

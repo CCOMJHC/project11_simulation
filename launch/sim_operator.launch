@@ -3,8 +3,10 @@
   <arg name="operator_namespace" default="operator"/>
   <arg name="enableBridge" default="true"/>
   <arg name="backgroundChart" default="$(find camp)/workspace/13283/13283_2.KAP"/>
-  <param name="/use_sim_time" type="bool" value="true"/>
-  
+  <arg name="use_sim_time" default="true"/>
+
+  <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
+
   <include file="$(find project11)/launch/operator_core.launch">
     <arg name="operatorJoystick" value="true"/>
     <arg name="namespace" value="$(arg operator_namespace)"/>
