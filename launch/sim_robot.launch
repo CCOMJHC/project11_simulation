@@ -1,6 +1,7 @@
 <launch>
   <arg name="namespace" default="ben"/>
   <arg name="operator_namespace" default="operator"/>
+  <arg name="operator_host" default="localhost"/>
   <arg name="enableBridge" default="true"/>
   <arg name="sim_traffic" default="false"/>
   <arg name="use_sim_time" default="true"/>
@@ -37,5 +38,7 @@
   <node if="$(arg sim_traffic)" pkg="traffic_sim" type="traffic_sim_node.py" name="traffic_sim" ns="$(arg namespace)"/>
 
   <rosparam command="load" file="$(find ben_project11)/config/ben_sim.yaml" ns="$(arg namespace)"/>
+  
+  <param name="/$(arg namespace)/udp_bridge/remotes/operator/connections/default/host" value="$(arg operator_host)"/>
 
 </launch>
