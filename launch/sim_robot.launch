@@ -5,7 +5,7 @@
   <arg name="operator_port" default="4201"/>
   <arg name="enableBridge" default="true"/>
   <arg name="sim_traffic" default="false"/>
-  <arg name="use_sim_time" default="true"/>
+  <arg name="use_sim_time" default="false"/>
 
   <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
 

@@ -1,9 +1,10 @@
 <launch>
   <arg name="namespace" default="ben"/>
   <arg name="operator_namespace" default="operator"/>
+  <arg name="robot_host" default="localhost"/>
   <arg name="enableBridge" default="true"/>
   <arg name="backgroundChart" default="$(find camp)/workspace/13283/13283_2.KAP"/>
-  <arg name="use_sim_time" default="true"/>
+  <arg name="use_sim_time" default="false"/>
 
   <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
 
@@ -21,5 +22,7 @@
 
   <rosparam command="load" file="$(find ben_project11)/config/ben_operator.yaml" ns="$(arg operator_namespace)"/>
   <rosparam command="load" file="$(find project11_simulation)/config/sim_operator.yaml" ns="$(arg operator_namespace)"/>
-    
+
+  <param if="$(arg enableBridge)" name="/$(arg operator_namespace)/udp_bridge/remotes/robot/connections/default/host" value="$(arg robot_host)"/>
+
 </launch>
