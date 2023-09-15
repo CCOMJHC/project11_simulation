@@ -1,15 +1,23 @@
 <launch>
   <arg name="namespace" default="ben"/>
+  <arg name="sim_name" default="ben"/>
   <arg name="operator_namespace" default="operator"/>
   <arg name="operator_host" default="localhost"/>
   <arg name="operator_port" default="4201"/>
   <arg name="enableBridge" default="true"/>
   <arg name="sim_traffic" default="false"/>
   <arg name="use_sim_time" default="false"/>
+  <arg name="drix" default="false"/>
 
   <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
 
-  <include file="$(find ben_project11)/launch/ben_core.launch">
+  <include unless="$(arg drix)" file="$(find ben_project11)/launch/ben_core.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+    <arg name="enableBridge" value="$(arg enableBridge)"/>
+  </include>
+
+  <include if="$(arg drix)" file="$(find drix_project11)/launch/drix_core.launch">
+    <arg name="drixNumber" value="2"/>
     <arg name="namespace" value="$(arg namespace)"/>
     <arg name="enableBridge" value="$(arg enableBridge)"/>
   </include>
@@ -22,7 +30,7 @@
     <remap from="odom" to="project11/odom"/>
     <remap from="throttle" to="control/throttle"/>
     <remap from="rudder" to="control/rudder"/>
-    <remap from="have_commands" to="/asv_sim/ben/have_commands"/>
+    <remap from="have_commands" to="/asv_sim/$(arg sim_name)/have_commands"/>
   </node>
   
   <node pkg="asv_sim" type="asv_sim_node.py" name="asv_sim">
@@ -32,13 +40,23 @@
     <remap from="/$(arg namespace)/throttle" to="/$(arg namespace)/control/throttle"/>
     <remap from="/$(arg namespace)/rudder" to="/$(arg namespace)/control/rudder"/>
 
+  </node>
+
+  <group unless="$(arg drix)" ns="asv_sim">
     <rosparam file="$(find asv_sim)/config/cw4.yaml"/>
     <rosparam file="$(find asv_sim)/config/ben.yaml"/>
-  </node>
+  </group>
+
+  <group if="$(arg drix)" ns="asv_sim">
+    <rosparam file="$(find asv_sim)/config/drix.yaml"/>
+    <rosparam file="$(find asv_sim)/config/drix_2.yaml"/>
+  </group>
 
   <node if="$(arg sim_traffic)" pkg="traffic_sim" type="traffic_sim_node.py" name="traffic_sim" ns="$(arg namespace)"/>
 
-  <rosparam command="load" file="$(find ben_project11)/config/ben_sim.yaml" ns="$(arg namespace)"/>
+  <rosparam unless="$(arg drix)" command="load" file="$(find ben_project11)/config/ben_sim.yaml" ns="$(arg namespace)"/>
+
+  <rosparam if="$(arg drix)" command="load" file="$(find drix_project11)/config/drix_sim.yaml" ns="$(arg namespace)"/>
 
   <param if="$(arg enableBridge)" name="/$(arg namespace)/udp_bridge/remotes/operator/connections/default/host" value="$(arg operator_host)"/>
   <param if="$(arg enableBridge)" name="/$(arg namespace)/udp_bridge/remotes/operator/connections/default/port" value="$(arg operator_port)"/>
