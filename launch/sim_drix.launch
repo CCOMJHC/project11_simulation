@@ -5,6 +5,7 @@
   <arg name="sim_traffic" default="false"/>
   <arg name="backgroundChart" default="$(find camp)/workspace/19004/19004_1.KAP"/>
   <arg name="use_sim_time" default="false"/>
+  <arg name="with_mesobot" default="true"/>
 
   <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
 
@@ -17,9 +18,6 @@
     <arg name="drix" value="true"/>
   </include>
   
-  <rosparam param="project11/platforms/$(arg sim_name)/nav_sources/nav" ns="$(arg namespace)" subst_value="True">{position_topic: /$(arg namespace)/sensors/nav/position, orientation_topic: /$(arg namespace)/sensors/nav/orientation, velocity_topic: /$(arg namespace)/sensors/nav/velocity}</rosparam>
-
-
   <include file="$(find project11_simulation)/launch/sim_operator.launch">
     <arg name="namespace" value="$(arg namespace)"/>
     <arg name="operator_namespace" value="$(arg operator_namespace)"/>
@@ -27,4 +25,18 @@
     <arg name="backgroundChart" value="$(arg backgroundChart)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
   </include>
+
+  <group if="$(arg with_mesobot)">
+    <include file="$(find mesobot_project11)/launch/sim_with_drix.launch">
+      <arg name="drixNumber" value="2"/>
+      <arg name="drixNamespace" value="$(arg namespace)"/>
+    </include>
+    <param name="/mesobot_sim/start_latitude" value="18.73"/>
+    <param name="/mesobot_sim/start_longitude" value="-158.26"/>
+  </group>
+ 
+
+  <rosparam param="project11/platforms/$(arg sim_name)/nav_sources/nav" ns="$(arg namespace)" subst_value="True">{position_topic: /$(arg namespace)/sensors/nav/position, orientation_topic: /$(arg namespace)/sensors/nav/orientation, velocity_topic: /$(arg namespace)/sensors/nav/velocity}</rosparam>
+
+
 </launch>
