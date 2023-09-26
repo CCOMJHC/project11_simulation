@@ -1,30 +1,28 @@
 <launch>
 
-  <rosparam file="$(find asv_sim)/config/bob.yaml" ns="asv_sim"/>
-
-  <rosparam file="$(find project11_simulation)/config/bob_operator.yaml" ns="operator"/>
-
-  <remap from="/bob/position" to="/bob/sensors/posmv/position"/>
-  <remap from="/bob/orientation" to="/bob/sensors/posmv/orientation"/>
-  <remap from="/bob/velocity" to="/bob/sensors/posmv/velocity"/>
+  <remap from="/bob/position" to="/bob/sensors/nav/position"/>
+  <remap from="/bob/orientation" to="/bob/sensors/nav/orientation"/>
+  <remap from="/bob/velocity" to="/bob/sensors/nav/velocity"/>
   <remap from="/bob/throttle" to="/bob/control/throttle"/>
   <remap from="/bob/rudder" to="/bob/control/rudder"/>
 
   <include file="$(find project11_simulation)/launch/sim_local.launch"/>
 
-  <include file="$(find ben_project11)/launch/ben_core.launch">
+  <include file="$(find project11_simulation)/launch/sim_robot.launch">
     <arg name="namespace" value="bob"/>
+    <arg name="no_sim" value="true"/>
+  </include>
+
+  <include file="$(find project11)/launch/operator_core.launch">
+    <arg name="robotNamespace" value="bob"/>
+    <arg name="operatorJoystick" value="false"/>
     <arg name="enableBridge" value="false"/>
   </include>
-    
-  <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="bob">
-    <remap from="helm" to="project11/control/helm"/>
-    <remap from="throttle" to="control/throttle"/>
-    <remap from="rudder" to="control/rudder"/>
-    <remap from="have_commands" to="/asv_sim/bob/have_commands"/>
-  </node>
 
-  <node pkg="command_bridge" type="command_bridge_sender_node.py" name="command_bridge_sender" ns="bob"/>
+  <rosparam file="$(find asv_sim)/config/bob.yaml" ns="asv_sim"/>
 
+  <rosparam file="$(find project11_simulation)/config/bob_platform.yaml" ns="bob"/>
+
+  <rosparam command="load" file="$(find ben_project11)/config/ben_sim.yaml" ns="bob"/>
 
 </launch>

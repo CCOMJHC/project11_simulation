@@ -20,9 +20,9 @@
     <arg name="backgroundChart" value="$(arg backgroundChart)"/>
   </include>
 
-  <rosparam command="load" file="$(find ben_project11)/config/ben_operator.yaml" ns="$(arg operator_namespace)"/>
-  <rosparam command="load" file="$(find project11_simulation)/config/sim_operator.yaml" ns="$(arg operator_namespace)"/>
-
-  <param if="$(arg enableBridge)" name="/$(arg operator_namespace)/udp_bridge/remotes/robot/connections/default/host" value="$(arg robot_host)"/>
+  <group if="$(arg enableBridge)" ns="$(operator_namespace)/udp_bridge">
+    <param name="port" value="4201"/>
+    <param name="remotes/robot/connections/default/host" value="$(arg robot_host)"/>
+  </group>
 
 </launch>

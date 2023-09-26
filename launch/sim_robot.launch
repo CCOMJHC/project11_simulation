@@ -1,6 +1,6 @@
 <launch>
   <arg name="namespace" default="ben"/>
-  <arg name="sim_name" default="ben"/>
+  <arg name="sim_name" default="$(arg namespace)"/>
   <arg name="operator_namespace" default="operator"/>
   <arg name="operator_host" default="localhost"/>
   <arg name="operator_port" default="4201"/>
@@ -8,6 +8,7 @@
   <arg name="sim_traffic" default="false"/>
   <arg name="use_sim_time" default="false"/>
   <arg name="drix" default="false"/>
+  <arg name="no_sim" default="false"/>
 
   <param if="$(arg use_sim_time)" name="/use_sim_time" type="bool" value="true"/>
 
@@ -22,6 +23,11 @@
     <arg name="enableBridge" value="$(arg enableBridge)"/>
   </include>
 
+  <include file="$(find project11)/launch/platform_nav_source.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+    <arg name="platform_name" value="$(arg sim_name)"/>
+  </include>
+
   <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/connections/default/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
     
   <node pkg="asv_helm" type="asv_helm_node" name="asv_helm" ns="$(arg namespace)">
@@ -33,23 +39,25 @@
     <remap from="have_commands" to="/asv_sim/$(arg sim_name)/have_commands"/>
   </node>
   
-  <node pkg="asv_sim" type="asv_sim_node.py" name="asv_sim">
-    <remap from="/$(arg namespace)/position" to="/$(arg namespace)/sensors/nav/position"/>
-    <remap from="/$(arg namespace)/orientation" to="/$(arg namespace)/sensors/nav/orientation"/>
-    <remap from="/$(arg namespace)/velocity" to="/$(arg namespace)/sensors/nav/velocity"/>
-    <remap from="/$(arg namespace)/throttle" to="/$(arg namespace)/control/throttle"/>
-    <remap from="/$(arg namespace)/rudder" to="/$(arg namespace)/control/rudder"/>
+  <group unless="$(arg no_sim)">
+    <node pkg="asv_sim" type="asv_sim_node.py" name="asv_sim">
+      <remap from="/$(arg namespace)/position" to="/$(arg namespace)/sensors/nav/position"/>
+      <remap from="/$(arg namespace)/orientation" to="/$(arg namespace)/sensors/nav/orientation"/>
+      <remap from="/$(arg namespace)/velocity" to="/$(arg namespace)/sensors/nav/velocity"/>
+      <remap from="/$(arg namespace)/throttle" to="/$(arg namespace)/control/throttle"/>
+      <remap from="/$(arg namespace)/rudder" to="/$(arg namespace)/control/rudder"/>
 
-  </node>
+    </node>
 
-  <group unless="$(arg drix)" ns="asv_sim">
-    <rosparam file="$(find asv_sim)/config/cw4.yaml"/>
-    <rosparam file="$(find asv_sim)/config/ben.yaml"/>
-  </group>
+    <group unless="$(arg drix)" ns="asv_sim">
+      <rosparam file="$(find asv_sim)/config/cw4.yaml"/>
+      <rosparam file="$(find asv_sim)/config/ben.yaml"/>
+    </group>
 
-  <group if="$(arg drix)" ns="asv_sim">
-    <rosparam file="$(find asv_sim)/config/drix.yaml"/>
-    <rosparam file="$(find asv_sim)/config/drix_2.yaml"/>
+    <group if="$(arg drix)" ns="asv_sim">
+      <rosparam file="$(find asv_sim)/config/drix.yaml"/>
+      <rosparam file="$(find asv_sim)/config/drix_2.yaml"/>
+    </group>
   </group>
 
   <node if="$(arg sim_traffic)" pkg="traffic_sim" type="traffic_sim_node.py" name="traffic_sim" ns="$(arg namespace)"/>
