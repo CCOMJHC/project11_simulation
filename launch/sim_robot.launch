@@ -48,6 +48,13 @@
 
     </node>
 
+    <node pkg="mbes_sim" type="mbes_sim_node.py" name="mbes_sim">
+      <param name="grid_file" value="$(find mbes_sim)/data/US5NH02M.tiff"/>
+      <param name="sonar_frame_id" value="$(arg namespace)/mbes"/>
+      <remap from="soundings" to="/$(arg namespace)/sensors/mbes/soundings"/>
+      <remap from="odom" to="/$(arg namespace)/odom"/>
+    </node>
+
     <group unless="$(arg drix)" ns="asv_sim">
       <rosparam file="$(find asv_sim)/config/cw4.yaml"/>
       <rosparam file="$(find asv_sim)/config/ben.yaml"/>
