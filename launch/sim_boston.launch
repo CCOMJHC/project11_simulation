@@ -1,0 +1,27 @@
+<launch>
+  <include file="$(find project11_simulation)/launch/sim_local.launch">
+    <arg name="backgroundChart" value="$(find camp)/workspace/Boston_Harbor_1.pdf"/>
+  </include>
+  <param name="/asv_sim/platforms/ben/start_lat" value="42.34"/>
+  <param name="/asv_sim/platforms/ben/start_lon" value="-71.0"/>
+  <param name="/asv_sim/current_speed" value="0.08"/>
+
+  <group ns="aishub">
+    <include file="$(find ccomjhc_project11)/launch/aishub.launch"/>
+    <node pkg="marine_ais_tools" type="ais_parser.py" name="ais_parser"/>
+    <node pkg="marine_ais_tools" type="ais_filter.py" name="ais_filter">
+      <rosparam param="include_areas" file="$(find marine_ais_tools)/config/boston_ais_filter.yaml"/>
+    </node>
+
+    <remap from="messages" to="filtered_messages"/>
+    <node pkg="marine_ais_tools" type="ais_contact_tracker.py" name="ais_contact_tracker">
+    </node>
+
+  </group>
+
+  <group ns="ben">
+    <node pkg="contact_cpa" type="contact_cpa.py" name="contact_cpa">
+      <remap from="contacts" to="/aishub/contacts"/>
+    </node>
+  </group>
+</launch>
