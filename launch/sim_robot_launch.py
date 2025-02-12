@@ -11,10 +11,12 @@ from launch.conditions import UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PythonExpression
 from launch.substitutions import TextSubstitution
 from launch_ros.actions import Node
 from launch_ros.actions import SetParameter
 from launch_ros.actions import SetParametersFromFile
+from launch_ros.actions import SetRemap
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
@@ -150,25 +152,33 @@ def generate_launch_description():
           )
         ]
       ),
-      Node(
-        package='mbes_sim',
-        executable='mbes_sim_node',
-        name='mbes_sim',
-        parameters=[{
-          'grid_file': PathJoinSubstitution([
-            get_package_share_directory('mbes_sim'),
-            'data/US5NH02M.tiff'
-          ]),
-          'sonar_frame_id': PathJoinSubstitution([
-            namespace,
-            'mbes'
-          ]) 
-        }],
-        remappings=[
-          ('soundings', PathJoinSubstitution([namespace, 'sensors', 'mbes', 'soundings'])),
-          ('odom', PathJoinSubstitution([namespace, 'odom']))
-        ]
-      )
+      GroupAction(
+        actions=[
+          SetParameter(
+            name='sonar_frame_id',
+            value=PythonExpression(
+              expression = ['"', namespace, '/mbes"']
+            ) 
+          ),
+          SetRemap(
+            src='soundings',
+            dst=PythonExpression( expression = [ '"/', namespace, '/sensors/mbes/soundings"'])
+          ),
+          SetRemap(
+            src='odom',
+            dst=PythonExpression( expression = [ '"/', namespace, '/odom"'])
+          ),
+          IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+              PathJoinSubstitution([
+                FindPackageShare('mbes_sim'),
+                'launch',
+                'mbes_sim_launch.py'
+              ])
+            ),
+          )
+        ],
+      ),
     ],
     condition=UnlessCondition(no_sim),
   )
