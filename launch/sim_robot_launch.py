@@ -52,7 +52,11 @@ def generate_launch_description():
 
   launch_ben_core_include = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(
-      PathJoinSubstitution([FindPackageShare('ben_project11'), 'launch', 'ben_core_launch.py'])
+      PathJoinSubstitution([
+        FindPackageShare('ben_project11'),
+        'launch',
+        'ben_core_launch.py'
+      ])
     ),
     condition=UnlessCondition(drix),
     launch_arguments={
@@ -77,18 +81,6 @@ def generate_launch_description():
   #   }.items()
   # )
 
-  launch_platform_nav_source_include = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource(
-      os.path.join(
-        get_package_share_directory('project11'),
-        'launch/platform_nav_source_launch.py'
-      )
-    ),
-    launch_arguments={
-      'namespace': namespace,
-      'platform_name': sim_name
-    }.items()
-  )
 
   # <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/connections/default/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
 
@@ -202,7 +194,6 @@ def generate_launch_description():
     set_use_sim_time,
     launch_ben_core_include,
     #launch_drix_core_include,
-    launch_platform_nav_source_include,
     asv_helm_node,
     sim_group,
   ])
