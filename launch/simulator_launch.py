@@ -62,7 +62,13 @@ def generate_launch_description():
       'operator_namespace': operator_namespace,
       'enable_bridge': 'false',
       'background_chart': background_chart,
-      'use_sim_time': use_sim_time
+      'use_sim_time': use_sim_time,
+      'rviz': 'true',
+      'rviz_configuration': PathJoinSubstitution([
+        FindPackageShare('ben_project11'),
+        'config',
+        'ben.rviz'
+      ])
     }.items()
   )
 

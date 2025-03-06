@@ -14,6 +14,7 @@ from launch.substitutions import PathJoinSubstitution
 from launch.substitutions import PythonExpression
 from launch.substitutions import TextSubstitution
 from launch_ros.actions import Node
+from launch_ros.actions import PushROSNamespace
 from launch_ros.actions import SetParameter
 from launch_ros.actions import SetParametersFromFile
 from launch_ros.actions import SetRemap
@@ -84,18 +85,24 @@ def generate_launch_description():
 
   # <rosparam if="$(arg enableBridge)" param="udp_bridge/remotes/operator/connections/default/topics/clock" ns="$(arg namespace)">{source: /clock}</rosparam>
 
-  asv_helm_node = Node(
-    package="asv_helm",
-    namespace=namespace,
-    executable="asv_helm_node",
-    name="asv_helm",
-    remappings=[
-      ('helm', 'project11/control/helm'),
-      ('cmd_vel', 'project11/control/cmd_vel'),
-      ('throttle', 'control/throttle'),
-      ('rudder', 'control/rudder'),
-      ('have_commands', PathJoinSubstitution(['/asv_sim', sim_name, 'have_commands']))
-    ]
+  asv_helm_group = GroupAction(
+    actions=[
+      PushROSNamespace(namespace),
+      SetRemap(src='helm', dst='project11/control/helm'),
+      SetRemap(src='cmd_vel', dst='project11/control/cmd_vel'),
+      SetRemap(src='throttle', dst='control/throttle'),
+      SetRemap(src='rudder', dst='control/rudder'),
+      SetRemap(src='have_commands', dst=PathJoinSubstitution(['/asv_sim', sim_name, 'have_commands'])),
+      IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+          PathJoinSubstitution([
+            FindPackageShare('asv_helm'),
+            'launch',
+            'asv_helm_launch.py'
+          ])
+        ),
+      )
+    ],
   )
 
   sim_group = GroupAction(
@@ -194,6 +201,6 @@ def generate_launch_description():
     set_use_sim_time,
     launch_ben_core_include,
     #launch_drix_core_include,
-    asv_helm_node,
+    asv_helm_group,
     sim_group,
   ])

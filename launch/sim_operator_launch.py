@@ -15,6 +15,8 @@ def generate_launch_description():
   enable_bridge = LaunchConfiguration('enable_bridge')
   background_chart = LaunchConfiguration('background_chart')
   use_sim_time = LaunchConfiguration('use_sim_time')
+  rviz = LaunchConfiguration('rviz')
+  rviz_configuration = LaunchConfiguration('rviz_configuration')
 
   robot_namespace_arg = DeclareLaunchArgument(
     "robot_namespace", default_value=TextSubstitution(text="ben")
@@ -35,6 +37,14 @@ def generate_launch_description():
   use_sim_time_arg = DeclareLaunchArgument(
     "use_sim_time", default_value=TextSubstitution(text="false")
   )
+
+  rviz_arg = DeclareLaunchArgument(
+    "rviz", default_value=TextSubstitution(text="false")
+  )
+  rviz_configuration_arg = DeclareLaunchArgument(
+    "rviz_configuration", default_value=""
+  )
+
 
 
   set_use_sim_time = SetParameter(name='use_sim_time', value=use_sim_time)
@@ -67,7 +77,9 @@ def generate_launch_description():
     ),
     launch_arguments={
       'namespace': operator_namespace,
-      'background_chart': background_chart
+      'background_chart': background_chart,
+      'rviz': rviz,
+      'rviz_configuration': rviz_configuration
     }.items()
   )
 
@@ -77,6 +89,8 @@ def generate_launch_description():
     background_chart_arg,
     enable_bridge_arg,
     use_sim_time_arg,
+    rviz_arg,
+    rviz_configuration_arg,
     set_use_sim_time,
     launch_operator_core_include,
     launch_operator_ui_include
