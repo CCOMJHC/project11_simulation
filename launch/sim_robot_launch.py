@@ -127,6 +127,7 @@ def generate_launch_description():
         package="asv_sim",
         executable="asv_sim",
         name='asv_sim',
+        emulate_tty=True,
         parameters=[{'platforms': ['ben']}],
         remappings=[
           (
@@ -159,13 +160,21 @@ def generate_launch_description():
               expression = ['"', namespace, '/mbes"']
             ) 
           ),
+          SetParameter(
+            name='ping_interval',
+            value=0.2
+          ),
           SetRemap(
-            src='soundings',
-            dst=PythonExpression( expression = [ '"/', namespace, '/sensors/mbes/soundings"'])
+            src='detections',
+            dst=PythonExpression( expression = [ '"/', namespace, '/sensors/mbes/detections"'])
           ),
           SetRemap(
             src='odom',
             dst=PythonExpression( expression = [ '"/', namespace, '/odom"'])
+          ),
+          SetRemap(
+            src='soundings',
+            dst=PythonExpression( expression = [ '"/', namespace, '/sensors/mbes/original_soundings"'])
           ),
           IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -177,6 +186,71 @@ def generate_launch_description():
             ),
           )
         ],
+      ),
+      GroupAction(
+          actions=[
+            PushROSNamespace([
+              namespace,
+              '/sensors/mbes'
+            ]),
+            GroupAction(
+                actions=[
+                  SetRemap(
+                    src='position',
+                    dst=PythonExpression( expression = [ '"/', 
+                        namespace,
+                        '/sensors/nav/position"'
+                    ])
+                  ),
+                  SetRemap(
+                      src='orientation',
+                      dst=PythonExpression( expression = [ '"/',
+                          namespace,
+                          '/sensors/nav/orientation"'
+                      ])
+                  ),
+                  SetRemap(
+                      src='velocity',
+                      dst=PythonExpression( expression = [ '"/',
+                          namespace,
+                          '/sensors/nav/velocity"'
+                      ])
+                  ),
+                  IncludeLaunchDescription(
+                      PythonLaunchDescriptionSource(
+                          PathJoinSubstitution([
+                              FindPackageShare('cube_bathymetry'),
+                              'launch',
+                              'detections_to_pointcloud_launch.py'
+                          ])
+                      )
+                  ),
+                ]
+            ),
+            GroupAction(
+                actions=[
+                  SetParameter(
+                      name='map_frame',
+                      value=PythonExpression(
+                          expression = ['"', namespace, '/map"']
+                      )
+                  ),
+                  SetParameter(
+                    name='cell_size',
+                    value=0.5
+                  ),
+                  IncludeLaunchDescription(
+                      PythonLaunchDescriptionSource(
+                          PathJoinSubstitution([
+                              FindPackageShare('cube_bathymetry'),
+                              'launch',
+                              'cube_bathymetry_launch.py'
+                          ])
+                      )
+                  ),
+                ]
+            )
+          ]
       ),
     ],
     condition=UnlessCondition(no_sim),

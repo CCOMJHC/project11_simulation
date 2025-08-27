@@ -1,37 +1,31 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.actions import GroupAction
 from launch.actions import IncludeLaunchDescription
+from launch.actions import LogInfo
+from launch.actions import SetEnvironmentVariable
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 from launch.substitutions import TextSubstitution
-from launch_ros.actions import SetParameter
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-  robot_namespace = LaunchConfiguration('robot_namespace')
-  operator_namespace = LaunchConfiguration('operator_namespace')
   background_chart = LaunchConfiguration('background_chart')
-  use_sim_time = LaunchConfiguration('use_sim_time')
+  enable_bridge = LaunchConfiguration('enable_bridge')
 
-  robot_namespace_arg = DeclareLaunchArgument(
-    "robot_namespace", default_value=TextSubstitution(text="ben")
-  )
-  operator_namespace_arg = DeclareLaunchArgument(
-    "operator_namespace", default_value=TextSubstitution(text="operator")
-  )
   background_chart_arg = DeclareLaunchArgument(
     "background_chart", default_value=PathJoinSubstitution(
       [FindPackageShare('camp'), 'workspace', '13283', '13283_2.KAP']
     )
   )
-  use_sim_time_arg = DeclareLaunchArgument(
-    "use_sim_time", default_value=TextSubstitution(text="false")
+
+  enable_bridge_arg = DeclareLaunchArgument(
+    "enable_bridge", default_value=TextSubstitution(text="false")
   )
 
-  set_use_sim_time = SetParameter(name='use_sim_time', value=use_sim_time)
-  # 'use_sim_time' will be set on all nodes following the line above
 
   launch_sim_robot_include = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(
@@ -42,44 +36,64 @@ def generate_launch_description():
       ])
     ),
     launch_arguments={
-      'namespace': robot_namespace,
+      'namespace': 'ben',
       'enable_bridge': 'false',
-      'operator_host': 'localhost',
-      'use_sim_time': use_sim_time
     }.items()
   )
 
-  launch_sim_operator_include = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource(
-      PathJoinSubstitution([
-        FindPackageShare('project11_simulation'),
-        'launch',
-        'sim_operator_launch.py'
-      ])
-    ),
-    launch_arguments={
-      'robot_namespace': robot_namespace,
-      'operator_namespace': operator_namespace,
-      'enable_bridge': 'false',
-      'background_chart': background_chart,
-      'use_sim_time': use_sim_time,
-      'rviz': 'true',
-      'rviz_configuration': PathJoinSubstitution([
-        FindPackageShare('ben_project11'),
-        'config',
-        'ben.rviz'
-      ])
-    }.items()
+
+  launch_sim_operator_group = GroupAction(
+    actions=[
+      SetEnvironmentVariable(
+        name = 'ROS_DOMAIN_ID',
+        value =  '1',
+        condition = IfCondition(enable_bridge)
+      ),
+
+      IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+          PathJoinSubstitution([
+            FindPackageShare('project11_simulation'),
+            'launch',
+            'sim_operator_launch.py'
+          ])
+        ),
+        launch_arguments={
+          'robot_namespace': 'ben',
+          'operator_namespace': 'operator',
+          'enable_bridge': 'false',
+          'background_chart': background_chart,
+          'rviz': 'true',
+          'rviz_configuration': PathJoinSubstitution([
+            FindPackageShare('ben_project11'),
+            'config',
+            'ben.rviz'
+          ])
+        }.items()
+      ),
+
+      IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+          PathJoinSubstitution([
+            FindPackageShare('project11_simulation'),
+            'launch',
+            'udp_bridge_launch.py'
+          ])
+        ),
+        condition=IfCondition(enable_bridge)
+      )
+    ]
   )
 
   return LaunchDescription([
-    robot_namespace_arg,
-    operator_namespace_arg,
     background_chart_arg,
-    use_sim_time_arg,
-    set_use_sim_time,
+    enable_bridge_arg,
+    LogInfo(
+      condition=IfCondition(enable_bridge),
+      msg=TextSubstitution(text="Bridge enabled")
+    ),
     launch_sim_robot_include,
-    launch_sim_operator_include
+    launch_sim_operator_group
   ])
 
 

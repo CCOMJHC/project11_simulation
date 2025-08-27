@@ -3,6 +3,7 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
+from launch.actions import OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
@@ -83,6 +84,13 @@ def generate_launch_description():
     }.items()
   )
 
+  def print_ros_domain_id(context):
+    from launch.actions import LogInfo
+    domain_id = 0
+    if 'ROS_DOMAIN_ID' in context.environment:
+      domain_id = context.environment['ROS_DOMAIN_ID']
+    return [LogInfo(msg=f'ROS domain id: {domain_id}'),]
+
   return LaunchDescription([
     robot_namespace_arg,
     operator_namespace_arg,
@@ -93,7 +101,10 @@ def generate_launch_description():
     rviz_configuration_arg,
     set_use_sim_time,
     launch_operator_core_include,
-    launch_operator_ui_include
+    launch_operator_ui_include,
+    OpaqueFunction(
+      function=print_ros_domain_id
+    )
   ])
 
 
