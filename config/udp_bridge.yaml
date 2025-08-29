@@ -1,0 +1,55 @@
+/ben/udp_bridge:
+  ros__parameters:
+    name: ben
+    port: 4200
+    maximum_packet_size: 1000
+    remotes_list:
+      - operator
+    remotes:
+      operator:
+        connections_list:
+          - default
+        connections:
+          default:
+            host: localhost
+            port: 4201
+            maximum_bytes_per_second: 50000
+            topics_list:
+            - odom
+            - project11-heartbeat
+            - project11-nav-orientation
+            - project11-nav-position
+            - project11-nav-velocity
+            - project11-platforms
+            - project11-response
+            - project11-status-mission-manager
+            topics:
+              odom: {source: odom}
+              project11-heartbeat: {source: project11/heartbeat}
+              project11-nav-orientation: {source: project11/nav/orientation}
+              project11-nav-position: {source: project11/nav/position}
+              project11-nav-velocity: {source: project11/nav/velocity}
+              project11-platforms: {source: /project11/platforms}
+              project11-response: {source: project11/response}
+              project11-status-mission-manager: {source: project11/status/mission_manager}
+
+/operator/udp_bridge:
+  ros__parameters:
+    name: operator
+    port: 4201
+    maximum_packet_size: 1000
+    remotes_list:
+      - ben
+    remotes:
+      ben:
+        connections_list:
+          - default
+        connections:
+          default:
+            host: localhost
+            port: 4200
+            maximum_bytes_per_second: 50000
+            topics_list:
+            - piloting_mode-manual-helm
+            topics:
+              piloting_mode-manual-helm: {source: 'piloting_mode/manual/helm'}
